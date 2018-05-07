@@ -6,7 +6,7 @@ apply plugin: 'com.jfrog.bintray'
 version = "1.0.2"
 android {
     compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    buildToolsVersion '26.0.2'
     resourcePrefix "ly__"
 
     defaultConfig {
@@ -22,9 +22,10 @@ android {
 
     task ndkBuild(type: Exec) {
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            commandLine 'ndk-build.cmd', '-C', file('src/main/jni').absolutePath
+            def ndkDir = android.ndkDirectory
+            commandLine "${ndkDir}/ndk-build.cmd", '-C', file('src/main/jni').absolutePath
         } else {
-            commandLine 'ndk-build', '-C', file('src/main/jni').absolutePath
+            commandLine "${ndkDir}/ndk-build", '-C', file('src/main/jni').absolutePath
         }
     }
 
