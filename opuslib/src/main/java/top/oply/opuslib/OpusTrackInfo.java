@@ -1,5 +1,6 @@
 package top.oply.opuslib;
 
+import android.content.Context;
 import android.os.Environment;
 
 import java.io.File;
@@ -41,6 +42,7 @@ public class OpusTrackInfo {
     public static final String TITLE_DURATION = "DURATION";
     public static final String TITLE_IMG = "TITLE_IMG";
     public static final String TITLE_IS_CHECKED = "TITLE_IS_CHECKED";
+    private  Context context;
 
     public void setEvenSender(OpusEvent opusEven) {
         mEventSender = opusEven;
@@ -51,7 +53,7 @@ public class OpusTrackInfo {
         if(!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
             return;
         String sdcardPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        appExtDir = sdcardPath + "/OPlayer/";
+        appExtDir = sdcardPath + "/xtcdata/";
         File fp = new File(appExtDir);
         if(!fp.exists())
             fp.mkdir();
@@ -108,9 +110,12 @@ public class OpusTrackInfo {
         mThread.start();
     }
 
-    public String getAValidFileName(String prefix) {
+    public String getAValidFileName(String prefix){
+        return getAValidFileName(prefix,".opus");
+    }
+
+    public String getAValidFileName(String prefix,String extention) {
         String name = prefix;
-        String extention = ".opus";
         HashSet<String> set = new HashSet<String>(100);
         List<Map<String, Object>> lst =  getTrackInfor().getList();
         for (Map<String, Object>map : lst) {
@@ -145,8 +150,17 @@ public class OpusTrackInfo {
                         map.put(TITLE_IMG, 0);
                         mTrackInforList.add(map);
                         mTool.closeOpusFile();
+                    }else if ("amr".equalsIgnoreCase(Utils.getExtention(name))){
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put(TITLE_TITLE, f.getName());
+                        map.put(TITLE_ABS_PATH,absPath);
+                        mAudioTime.setTimeInSecond(mTool.getTotalDuration());
+                        map.put(TITLE_DURATION, mAudioTime.getTime());
+                        //TODO: get imagin from amr files
+                        map.put(TITLE_IS_CHECKED,false);
+                        map.put(TITLE_IMG, 0);
+                        mTrackInforList.add(map);
                     }
-
                 } else if (f.isDirectory()){
                     prepareTrackInfor(f);
                 }

@@ -1,4 +1,4 @@
-package com.water.amraudiorecorder;
+package com.example.xtc.amrlib;
 
 import android.media.MediaRecorder;
 
@@ -26,6 +26,7 @@ public class AMRAudioRecorder  {
     private ArrayList<String> files = new ArrayList<String>();
 
     private String fileDirectory;
+    private String filePath;
 
     private String finalAudioPath;
 
@@ -39,9 +40,9 @@ public class AMRAudioRecorder  {
         return finalAudioPath;
     }
 
-    public AMRAudioRecorder (String audioFileDirectory) {
+    public AMRAudioRecorder (String audioFileDirectory,String filePath) {
         this.fileDirectory = audioFileDirectory;
-
+        this.filePath = filePath;
         if (!this.fileDirectory.endsWith("/")) {
             this.fileDirectory += "/";
         }
@@ -133,8 +134,14 @@ public class AMRAudioRecorder  {
             return true;
         }
 
+        String mergedFilePath = null;
         // Merge files
-        String mergedFilePath = this.fileDirectory + new Date().getTime() + ".amr";
+        if (filePath == null){
+            mergedFilePath = this.fileDirectory + new Date().getTime() + ".amr";
+        }else{
+            mergedFilePath = filePath;
+        }
+
         try {
             FileOutputStream fos = new FileOutputStream(mergedFilePath);
 
@@ -184,7 +191,13 @@ public class AMRAudioRecorder  {
             throw new IllegalArgumentException("[AMRAudioRecorder] audioFileDirectory is a not valid directory!");
         }
 
-        String filePath = directory.getAbsolutePath() + "/" + new Date().getTime() + ".amr";
+        String filePath = null;
+        if (this.filePath != null){
+            filePath = this.filePath;
+        }else{
+            filePath = directory.getAbsolutePath() + "/" + new Date().getTime() + ".amr";
+        }
+        //;
         this.files.add(filePath);
 
         recorder.setOutputFile(filePath);

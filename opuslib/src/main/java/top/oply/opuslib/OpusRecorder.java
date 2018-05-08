@@ -39,7 +39,7 @@ public class OpusRecorder {
     private OpusTool opusTool = new OpusTool();
     private int bufferSize = 0;
     private String filePath = null;
-    private ByteBuffer fileBuffer = ByteBuffer.allocateDirect(1920);// Should be 1920, to accord with function writeFreme()
+    private ByteBuffer fileBuffer = ByteBuffer.allocateDirect(1920);// Should be 1920, to accord with function writeFrame()
     private OpusEvent mEventSender = null;
     private Timer mProgressTimer = null;
     private Utils.AudioTime mRecordTime = new Utils.AudioTime();
@@ -73,7 +73,7 @@ public class OpusRecorder {
         recorder.startRecording();
         state = STATE_STARTED;
         if(file.isEmpty()) {
-            filePath = OpusTrackInfo.getInstance().getAValidFileName("OpusRecord");
+            filePath = OpusTrackInfo.getInstance().getAValidFileName("OpusRecord",".opus");
         } else {
             filePath = file;
         }

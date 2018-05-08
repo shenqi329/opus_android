@@ -5,6 +5,17 @@
     <!-- TODO: Update blank fragment layout -->
 
 
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnRecordType"
+        android:src="@drawable/btn_record_selector"
+        android:onClick="onBtnRecordTypeClick"
+        android:text="opus录音，点击切换"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package com.xtc.weichat.util;
+package com.example.xtc.amrlib;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -35,10 +35,10 @@ public class MediaPlayerHelper {
         };
     }
 
-    public void play(Context context, Uri uri) {
+    public void play(String filePath) {
         try {
             mMediaPlayer.reset();
-            mMediaPlayer.setDataSource(context, uri);
+            mMediaPlayer.setDataSource(filePath);
             mMediaPlayer.prepare();
             mMediaPlayer.setOnPreparedListener(mPreparedListener);
         } catch (IOException e) {

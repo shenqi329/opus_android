@@ -4,7 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -25,8 +28,11 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.xtc.amrlib.AMRAudioRecorder;
+import com.example.xtc.amrlib.MediaPlayerHelper;
 import com.viewpagerindicator.TabPageIndicator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -72,8 +78,7 @@ public class MainActivity extends FragmentActivity {
     private boolean mPhaseBtnRecord = false;
     private boolean mPhaseBtnConvert = false;
 
-
-
+    private AMRAudioRecorder amrAudioRecorder = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +104,12 @@ public class MainActivity extends FragmentActivity {
         mAdapter.setHilighedItemPosition(songPlayingPosition);
         initUI();
         initBroadcast();
+    }
+
+    public String getAppExtDir(){
+        String sdcardPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String appExtDir = sdcardPath + "/xtcdata/";
+        return appExtDir;
     }
 
     public void onSaveInstanceState(Bundle outState) {
@@ -202,7 +213,11 @@ public class MainActivity extends FragmentActivity {
         Map<String, Object> m = mAdapter.getHilightedItem();
         if(m != null) {
             String filaName = m.get(OpusTrackInfo.TITLE_ABS_PATH).toString();
-            OpusService.toggle(getApplicationContext(), filaName);
+            if ("amr".equalsIgnoreCase(Utils.getExtention(filaName))){
+                MediaPlayerHelper.getInstance().play(filaName);
+            }else{
+                OpusService.toggle(getApplicationContext(), filaName);
+            }
         }
     }
 
@@ -211,6 +226,7 @@ public class MainActivity extends FragmentActivity {
             Map<String, Object> m = mAdapter.getHilightedItem();
             if(m != null) {
                 String filaName = m.get(OpusTrackInfo.TITLE_ABS_PATH).toString();
+
                 OpusService.play(getApplicationContext(), filaName);
             }
         }
@@ -230,9 +246,24 @@ public class MainActivity extends FragmentActivity {
         OpusService.stopPlaying(getApplicationContext());
     }
 
+    public void onBtnRecordTypeClick(View view){
+
+    }
+
     public void onBtnRecordClick(View v) {
-        String filaName = "";
-        OpusService.recordToggle(getApplicationContext(), filaName);
+        if (false){
+            String fileNameForAmr = OpusTrackInfo.getInstance().getAValidFileName("AmrRecord",".amr");
+            if (amrAudioRecorder == null){
+                amrAudioRecorder = new AMRAudioRecorder(getAppExtDir(),fileNameForAmr);
+                amrAudioRecorder.start();
+            }else{
+                amrAudioRecorder.stop();
+                amrAudioRecorder = null;
+            }
+        }else{
+            String fileNameForOpus = OpusTrackInfo.getInstance().getAValidFileName("OpusRecord",".opus");
+            OpusService.recordToggle(getApplicationContext(), fileNameForOpus);
+        }
     }
 
 
@@ -443,6 +474,7 @@ public class MainActivity extends FragmentActivity {
                         int progress = (int) (100 * position / duration);
                         mPlaySeekBar.setProgress(progress);
                     }
+                    Log.d(TAG, "position:"+position+" duration:"+duration);
                     break;
                 case OpusEvent.PLAY_GET_AUDIO_TRACK_INFO:
                     List<Map<String, Object>> songlst = ((OpusTrackInfo.AudioPlayList) (bundle

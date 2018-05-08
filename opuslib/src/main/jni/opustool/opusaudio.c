@@ -224,7 +224,7 @@ static int writeOggPage(ogg_page *page, FILE *os) {
     return written;
 }
 
-const opus_int32 bitrate = 16000;
+const opus_int32 bitrate = 6000;
 const opus_int32 rate = 16000;
 const opus_int32 frame_size = 960;
 const int with_cvbr = 1;
@@ -591,6 +591,7 @@ int initPlayer(const char *path) {
 
     _isSeekable = op_seekable(_opusFile);
     _totalPcmDuration = op_pcm_total(_opusFile, -1);
+    LOGE("_totalPcmDuration %d", _totalPcmDuration);
 	_channel_count = op_channel_count(_opusFile, -1);
 
     return 1;

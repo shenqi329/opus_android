@@ -73,7 +73,7 @@ public class Utils {
         return new File(fileName).exists();
     }
 
-    static String getExtention(String fileName) {
+    public static String getExtention(String fileName) {
         String extension = "";
 
         int i = fileName.lastIndexOf('.');
