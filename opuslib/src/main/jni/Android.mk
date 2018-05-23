@@ -7,7 +7,7 @@ include celt_sources.mk
 include silk_sources.mk
 include opus_sources.mk
 
-MY_MODULE_DIR       := opustool
+MY_MODULE_DIR       := opus
 
 LOCAL_MODULE        := $(MY_MODULE_DIR)
 

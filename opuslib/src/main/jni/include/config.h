@@ -12,10 +12,10 @@
 #define _BUILD_SPEEX          	1
 #define SPX_RESAMPLE_EXPORT
 #define RANDOM_PREFIX         	opus__
-#define PACKAGE_NAME           	"opus-tools"
-#define PACKAGE_VERSION        	"1.1"
+#define PACKAGE_NAME           	"opus"
+#define PACKAGE_VERSION        	"1.2.1"
 #define PACKAGE_BUGREPORT 		"opus@xiph.org"
-#define PACKAGE_STRING 			"opus 1.1"
+#define PACKAGE_STRING 			"opus 1.2.1"
 #define PACKAGE_TARNAME 		"opus"
 
 /* Comment out the next line for Android */

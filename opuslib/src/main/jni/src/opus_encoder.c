@@ -478,7 +478,7 @@ OpusEncoder *opus_encoder_create(opus_int32 Fs, int channels, int application, i
 {
    int ret;
    OpusEncoder *st;
-   if((Fs!=48000&&Fs!=24000&&Fs!=16000&&Fs!=12000&&Fs!=8000)||(channels!=1&&channels!=2)||
+   if((Fs!=48000&&Fs!=32000&&Fs!=24000&&Fs!=16000&&Fs!=12000&&Fs!=8000)||(channels!=1&&channels!=2)||
        (application != OPUS_APPLICATION_VOIP && application != OPUS_APPLICATION_AUDIO
        && application != OPUS_APPLICATION_RESTRICTED_LOWDELAY))
    {

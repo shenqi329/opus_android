@@ -12,7 +12,7 @@ public class OpusTool {
     private static final String TAG = OpusTool.class.getName();
     static {
         try {
-            System.loadLibrary("opustool");
+            System.loadLibrary("opus");
             Log.d(TAG, "loaded library ");
         } catch (UnsatisfiedLinkError e) {
             Log.e(TAG, "Could not load library ");

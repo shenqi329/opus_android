@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.MediaPlayer;
+import android.media.AudioRecord;
+import android.media.MediaCodec;
+import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -17,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -25,10 +26,14 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.xtc.amrlib.AMRAudioRecorder;
+import com.example.xtc.amrlib.AudioDecoder;
+import com.example.xtc.amrlib.AudioRecorder;
+import com.example.xtc.amrlib.BaseAudio;
 import com.example.xtc.amrlib.MediaPlayerHelper;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -52,6 +57,9 @@ public class MainActivity extends FragmentActivity {
     private static final String PHASE_PLAY = "PHASE_PLAY";
     private static final String PHASE_RECORD = "PHASE_RECORD";
     private static final String PHASE_CONVERT = "PHASE_CONVERT";
+
+    private static final int RECORD_TYPE_OPUS = 1;
+    private static final int RECORD_TYPE_AMR = 2;
 
 
     private OpusReceiver mReceiver = null;
@@ -78,7 +86,11 @@ public class MainActivity extends FragmentActivity {
     private boolean mPhaseBtnRecord = false;
     private boolean mPhaseBtnConvert = false;
 
-    private AMRAudioRecorder amrAudioRecorder = null;
+    //private AMRAudioRecorder mAmrAudioRecorder = null;
+    BaseAudio baseAudio;
+    Spinner mSpinnerSelectRecordType = null;
+    private int mRecordType = RECORD_TYPE_OPUS;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +116,19 @@ public class MainActivity extends FragmentActivity {
         mAdapter.setHilighedItemPosition(songPlayingPosition);
         initUI();
         initBroadcast();
+
+        int count = MediaCodecList.getCodecCount();
+        for (int i = 0 ; i < count ; ++i){
+            MediaCodecInfo info = MediaCodecList.getCodecInfoAt(i);
+            Log.d(TAG,"MediaCodecList:" + info.isEncoder() + ":"+info.getName());
+        }
+
+//        try {
+//            MediaCodec codec = MediaCodec.createEncoderByType("audio/3gpp");
+//            codec = codec;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public String getAppExtDir(){
@@ -144,6 +169,24 @@ public class MainActivity extends FragmentActivity {
         mBtnRecord = (ImageButton) v.findViewById(R.id.btnRecord);
         mTvRecordTime = (TextView) v.findViewById(R.id.tvRecordTime);
         changeBtnRecordStatus(mPhaseBtnRecord);
+
+
+//        mSpinnerSelectRecordType = (Spinner)v.findViewById(R.id.spinner1);
+//        mSpinnerSelectRecordType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (position == 0){
+//                    mRecordType = RECORD_TYPE_OPUS;
+//                }else if (position == 1){
+//                    mRecordType = RECORD_TYPE_AMR;
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
     }
 
     public void initConverUI(View v) {
@@ -196,6 +239,7 @@ public class MainActivity extends FragmentActivity {
         //Bind the title indicator to the adapter
         TabPageIndicator tabIndicator = (TabPageIndicator) findViewById(R.id.indicator);
         tabIndicator.setViewPager(pager);
+
     }
 
 
@@ -214,6 +258,8 @@ public class MainActivity extends FragmentActivity {
         if(m != null) {
             String filaName = m.get(OpusTrackInfo.TITLE_ABS_PATH).toString();
             if ("amr".equalsIgnoreCase(Utils.getExtention(filaName))){
+                MediaPlayerHelper.getInstance().play(filaName);
+            }else if ("wav".equalsIgnoreCase(Utils.getExtention(filaName))){
                 MediaPlayerHelper.getInstance().play(filaName);
             }else{
                 OpusService.toggle(getApplicationContext(), filaName);
@@ -251,16 +297,24 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onBtnRecordClick(View v) {
-        if (false){
-            String fileNameForAmr = OpusTrackInfo.getInstance().getAValidFileName("AmrRecord",".amr");
-            if (amrAudioRecorder == null){
-                amrAudioRecorder = new AMRAudioRecorder(getAppExtDir(),fileNameForAmr);
-                amrAudioRecorder.start();
+        if (mRecordType == RECORD_TYPE_AMR){
+            String fileNameForAmr = OpusTrackInfo.getInstance().getAValidFileName("MediaCodec",".amr");
+            if (AudioRecorder.getInstance().isRuning()){
+                AudioRecorder.getInstance().stop();
             }else{
-                amrAudioRecorder.stop();
-                amrAudioRecorder = null;
+                AudioDecoder audioDecoder = new AudioDecoder(fileNameForAmr);
+                AudioRecorder.getInstance().setAudioDecoder(audioDecoder);
+                AudioRecorder.getInstance().start();
             }
-        }else{
+//            String fileNameForAmr = OpusTrackInfo.getInstance().getAValidFileName("AmrRecord",".amr");
+//            if (mAmrAudioRecorder == null){
+//                mAmrAudioRecorder = new AMRAudioRecorder(getAppExtDir(),fileNameForAmr);
+//                mAmrAudioRecorder.start();
+//            }else{
+//                mAmrAudioRecorder.stop();
+//                mAmrAudioRecorder = null;
+//            }
+        }else if (mRecordType == RECORD_TYPE_OPUS){
             String fileNameForOpus = OpusTrackInfo.getInstance().getAValidFileName("OpusRecord",".opus");
             OpusService.recordToggle(getApplicationContext(), fileNameForOpus);
         }

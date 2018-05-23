@@ -1,5 +1,9 @@
 package com.example.xtc.amrlib;
 
+import android.media.AudioRecord;
+import android.media.MediaCodec;
+import android.media.MediaCodecInfo;
+import android.media.MediaFormat;
 import android.media.MediaRecorder;
 
 import java.io.File;
@@ -27,6 +31,8 @@ public class AMRAudioRecorder  {
 
     private String fileDirectory;
     private String filePath;
+    private MediaCodec codec;
+    private AudioRecord audioRecord;
 
     private String finalAudioPath;
 
@@ -46,6 +52,25 @@ public class AMRAudioRecorder  {
         if (!this.fileDirectory.endsWith("/")) {
             this.fileDirectory += "/";
         }
+//        int bufferSizeInBytes = AudioRecord.getMinBufferSize(8000,16, 2);
+//        audioRecord = new AudioRecord(1,8000,16,2,bufferSizeInBytes);
+//        if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED){
+//            audioRecord = audioRecord;
+//        }
+//        try {
+//            codec = MediaCodec.createEncoderByType("audio/3gpp");
+//            MediaFormat audioMediaFormat = MediaFormat.createAudioFormat("audio/3gpp",1600,1);
+//            audioMediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 8*1024);
+//            codec.configure(audioMediaFormat,null,null,MediaCodec.CONFIGURE_FLAG_ENCODE);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        int inputBufferIndex = codec.dequeueInputBuffer(-1);
+//        if (inputBufferIndex >= 0){
+//            // fill inputBuffers[inputBufferIndex] with valid data
+//            codec.queueInputBuffer(inputBufferIndex,0,0,20,MediaCodec.BUFFER_FLAG_KEY_FRAME);
+//        }
 
         newRecorder();
     }

@@ -24,16 +24,16 @@
 
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/btnPlay"
-        android:src="@drawable/btn_play_selector"
-        android:onClick="onBtnPlayClick"
-        android:background="@android:color/transparent"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
+        android:layout_marginRight="20dp"
+        android:background="@android:color/transparent"
+        android:onClick="onBtnPlayClick"
+        android:src="@drawable/btn_play_selector" />
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,24 +45,24 @@
         android:layout_toLeftOf="@+id/tvDuration" />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/btnNext"
-        android:src="@drawable/btn_next_selector"
-        android:onClick="onBtnNextClick"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/btnPlay"
         android:background="@android:color/transparent"
-        android:layout_toRightOf="@+id/btnPlay"
-        android:layout_alignParentBottom="true" />
+        android:onClick="onBtnNextClick"
+        android:src="@drawable/btn_next_selector" />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/btnPrev"
-        android:src="@drawable/btn_prev_selector"
-        android:onClick="onBtnPrevClick"
-        android:background="@android:color/transparent"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/btnPlay" />
+        android:layout_toLeftOf="@+id/btnPlay"
+        android:background="@android:color/transparent"
+        android:onClick="onBtnPrevClick"
+        android:src="@drawable/btn_prev_selector" />
 
     <TextView
         android:layout_width="wrap_content"
